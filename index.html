@@ -10,8 +10,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Canvas Confetti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <!-- QRCode.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
         :root {
@@ -287,9 +285,37 @@
         }
 
         /* Interactive Soundboard */
+        .preset-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .preset-btn {
+            background: var(--navy-primary);
+            color: var(--gold-accent);
+            border: 2px solid var(--gold-accent);
+            padding: 10px 18px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .preset-btn:hover {
+            background: var(--gold-accent);
+            color: var(--navy-primary);
+            transform: scale(1.05);
+        }
+
         .soundboard-grid {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
             gap: 10px;
             margin-top: 16px;
         }
@@ -439,52 +465,6 @@
             display: block;
         }
 
-        /* QR Generator Section for Adele */
-        .qr-section {
-            background: var(--card-bg);
-            border-radius: var(--radius-lg);
-            padding: 32px;
-            margin-top: 30px;
-            text-align: center;
-        }
-
-        .qr-input-group {
-            display: flex;
-            gap: 10px;
-            max-width: 500px;
-            margin: 20px auto;
-        }
-
-        .qr-input-group input {
-            flex: 1;
-            padding: 12px 18px;
-            border-radius: 12px;
-            border: 2px solid #CBD5E1;
-            font-size: 0.95rem;
-        }
-
-        .btn-gold {
-            background: var(--gold-accent);
-            color: var(--navy-primary);
-            border: none;
-            padding: 12px 24px;
-            border-radius: 12px;
-            font-weight: 800;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .btn-gold:hover {
-            background: var(--gold-bright);
-            transform: scale(1.03);
-        }
-
-        #qrcode {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-        }
-
         footer {
             text-align: center;
             color: rgba(255, 255, 255, 0.6);
@@ -493,7 +473,7 @@
         }
 
         @media (max-width: 600px) {
-            .soundboard-grid { grid-template-columns: repeat(3, 1fr); }
+            .soundboard-grid { grid-template-columns: repeat(4, 1fr); }
             .audio-bar { top: 10px; right: 10px; }
         }
     </style>
@@ -542,7 +522,7 @@
                         <i class="fa-solid fa-circle-check"></i>
                         <div class="feature-text">
                             <h4>We Learn & Perform a Range of Music</h4>
-                            <p>From modern pop harmonies & Disney classics to traditional choral masterpieces!</p>
+                            <p>Explore diverse musical repertoire and harmonious vocal arrangements together!</p>
                         </div>
                     </li>
                     <li class="feature-item">
@@ -589,28 +569,30 @@
             </div>
 
             <!-- Card 3: Interactive Sound Studio -->
-            <div class="card">
+            <div class="card" style="grid-column: 1 / -1;">
                 <div class="card-header">
                     <div class="card-icon"><i class="fa-solid fa-icons"></i></div>
                     <h2 class="card-title">Interactive Sound Studio</h2>
                 </div>
-                <p style="color: var(--text-muted); font-size: 0.95rem;">Tap the notes below to play solfège pitch samples!</p>
+                <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 14px;">Try playing vocal harmonies and solfège pitch scales below!</p>
+                
+                <!-- Harmony Presets -->
+                <div class="preset-buttons">
+                    <button class="preset-btn" onclick="playHarmonyPreset('soprano')">🎤 Soprano Melody Preset</button>
+                    <button class="preset-btn" onclick="playHarmonyPreset('alto')">🎶 Warm Alto Preset</button>
+                    <button class="preset-btn" onclick="playHarmonyPreset('full')">🌟 Full Beatty Choir Chord</button>
+                </div>
+
+                <!-- 8-Note Solfège Pitch Keyboard -->
                 <div class="soundboard-grid">
-                    <button class="note-btn" onclick="playSynthNote(261.63, 'Do')">
-                        🎵 Do <span>C4</span>
-                    </button>
-                    <button class="note-btn" onclick="playSynthNote(293.66, 'Re')">
-                        🎵 Re <span>D4</span>
-                    </button>
-                    <button class="note-btn" onclick="playSynthNote(329.63, 'Mi')">
-                        🎵 Mi <span>E4</span>
-                    </button>
-                    <button class="note-btn" onclick="playSynthNote(349.23, 'Fa')">
-                        🎵 Fa <span>F4</span>
-                    </button>
-                    <button class="note-btn" onclick="playSynthNote(392.00, 'Sol')">
-                        🎵 Sol <span>G4</span>
-                    </button>
+                    <button class="note-btn" onclick="playSynthNote(261.63, 'Do')">🎵 Do <span>C4</span></button>
+                    <button class="note-btn" onclick="playSynthNote(293.66, 'Re')">🎵 Re <span>D4</span></button>
+                    <button class="note-btn" onclick="playSynthNote(329.63, 'Mi')">🎵 Mi <span>E4</span></button>
+                    <button class="note-btn" onclick="playSynthNote(349.23, 'Fa')">🎵 Fa <span>F4</span></button>
+                    <button class="note-btn" onclick="playSynthNote(392.00, 'Sol')">🎵 Sol <span>G4</span></button>
+                    <button class="note-btn" onclick="playSynthNote(440.00, 'La')">🎵 La <span>A4</span></button>
+                    <button class="note-btn" onclick="playSynthNote(493.88, 'Ti')">🎵 Ti <span>B4</span></button>
+                    <button class="note-btn" onclick="playSynthNote(523.25, 'High Do')">✨ High Do <span>C5</span></button>
                 </div>
             </div>
 
@@ -624,7 +606,7 @@
                 <div class="quiz-options">
                     <button class="quiz-option-btn" onclick="selectQuiz('soprano', '✨ High Note Superstar (Soprano)', 'You love singing bright, high melodies that float effortlessly above the crowd!')">
                         <strong>🎤 High & Bright</strong><br>
-                        <small>I love singing along to radio pop hits and catchy chorus hooks!</small>
+                        <small>I love singing bright vocal melodies and catchy chorus hooks!</small>
                     </button>
                     <button class="quiz-option-btn" onclick="selectQuiz('alto', '🎼 Warm Harmony Hero (Alto)', 'You bring rich, warm depth that makes the whole choir sound amazing!')">
                         <strong>🎶 Warm & Smooth</strong><br>
@@ -632,7 +614,7 @@
                     </button>
                     <button class="quiz-option-btn" onclick="selectQuiz('explorer', '🌟 Rhythm & Groove Explorer', 'You have a fantastic sense of timing and beatboxing energy!')">
                         <strong>🎧 Beats & Vibes</strong><br>
-                        <small>I love rhythm, beatboxing, and making funny sound effects!</small>
+                        <small>I love rhythm, beatboxing, and musical timing!</small>
                     </button>
                 </div>
                 <div class="quiz-result" id="quiz-result">
@@ -641,34 +623,61 @@
                 </div>
             </div>
 
-            <!-- Card 5: P6 Student & Parent FAQ -->
+            <!-- Card 5: P6 Student FAQ -->
             <div class="card" style="grid-column: 1 / -1;">
                 <div class="card-header">
                     <div class="card-icon"><i class="fa-solid fa-circle-question"></i></div>
-                    <h2 class="card-title">P6 Student & Parent FAQ</h2>
+                    <h2 class="card-title">P6 Student FAQ: All Your Questions Answered!</h2>
                 </div>
                 <div class="faq-list">
                     <div class="faq-item" onclick="toggleFaq(this)">
                         <div class="faq-question">
-                            <span>Do I need prior singing or music reading experience?</span>
+                            <span>Will I ever be forced to sing solo alone on stage?</span>
                             <i class="fa-solid fa-chevron-down"></i>
                         </div>
                         <div class="faq-answer">
-                            Not at all! We welcome all interested students regardless of background. Our friendly instructor and senior student leaders will guide you step-by-step in vocal technique and reading notation.
+                            No way! Choir is all about team harmony. You will always sing together with your section friends. Solo parts are purely voluntary for students who want to try out!
                         </div>
                     </div>
                     <div class="faq-item" onclick="toggleFaq(this)">
                         <div class="faq-question">
-                            <span>How does choir practice fit with Sec 1 academic studies?</span>
+                            <span>Can boys join Choir?</span>
                             <i class="fa-solid fa-chevron-down"></i>
                         </div>
                         <div class="faq-answer">
-                            Our practices take place twice a week with fixed, manageable schedules, giving you plenty of time to focus on your studies and enjoy your secondary school life.
+                            Absolutely! Boys bring essential tenor and bass warmth to our choir harmony. We love having boys join our choir family!
                         </div>
                     </div>
                     <div class="faq-item" onclick="toggleFaq(this)">
                         <div class="faq-question">
-                            <span>How do I join Choir during Sec 1 CCA Selection Week?</span>
+                            <span>Do we have choir outings and bonding fun?</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            Yes! We organize Secret Buddy gift exchanges, post-concert potlucks, and fun team-building activities throughout the year.
+                        </div>
+                    </div>
+                    <div class="faq-item" onclick="toggleFaq(this)">
+                        <div class="faq-question">
+                            <span>Will CCA interfere with my Sec 1 studies and exams?</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            Our practices are structured twice a week with regular breaks. CCA sessions pause during major examination periods so you can study stress-free.
+                        </div>
+                    </div>
+                    <div class="faq-item" onclick="toggleFaq(this)">
+                        <div class="faq-question">
+                            <span>Do I need prior singing experience or music reading skills?</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            Not at all! We teach everything from basic vocal warm-ups and breathing to reading musical notation step-by-step.
+                        </div>
+                    </div>
+                    <div class="faq-item" onclick="toggleFaq(this)">
+                        <div class="faq-question">
+                            <span>How do I select Choir during Sec 1 CCA Selection Week?</span>
                             <i class="fa-solid fa-chevron-down"></i>
                         </div>
                         <div class="faq-answer">
@@ -688,17 +697,6 @@
                 <div class="chip">🗓️ Tuesdays: 2.45 PM – 4.45 PM</div>
                 <div class="chip">🗓️ Fridays: 1.15 PM – 3.15 PM</div>
             </div>
-        </div>
-
-        <!-- Adele's Poster QR Code Tool -->
-        <div class="qr-section">
-            <h2 style="font-family: 'Fredoka One'; color: var(--navy-primary);"><i class="fa-solid fa-qrcode"></i> Poster QR Code Tool for Adele</h2>
-            <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 4px;">Enter your published GitHub website link below to update the poster QR code instantly!</p>
-            <div class="qr-input-group">
-                <input type="text" id="qr-link" value="https://beatty-secondary.github.io/choir" placeholder="https://your-site.github.io">
-                <button class="btn-gold" onclick="generateQr()">Generate QR Code</button>
-            </div>
-            <div id="qrcode"></div>
         </div>
 
         <footer>
@@ -781,7 +779,7 @@
             });
         }
 
-        // Interactive Solfège Note Player
+        // Single Note Player
         function playSynthNote(freq, noteName) {
             initAudio();
             if (audioCtx.state === 'suspended') {
@@ -792,16 +790,50 @@
             osc.type = 'triangle';
             osc.frequency.value = freq;
             gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.8);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.85);
             osc.connect(gain);
             gain.connect(audioCtx.destination);
             osc.start();
-            osc.stop(audioCtx.currentTime + 0.85);
+            osc.stop(audioCtx.currentTime + 0.9);
 
             confetti({
                 particleCount: 15,
                 spread: 40,
                 origin: { y: 0.8 }
+            });
+        }
+
+        // Harmony Presets Player
+        function playHarmonyPreset(preset) {
+            initAudio();
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            let freqs = [];
+            if (preset === 'soprano') freqs = [392.00, 440.00, 523.25];
+            else if (preset === 'alto') freqs = [261.63, 329.63, 392.00];
+            else if (preset === 'full') freqs = [130.81, 261.63, 329.63, 392.00, 523.25];
+
+            freqs.forEach((f, i) => {
+                setTimeout(() => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.value = f;
+                    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.2);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 1.25);
+                }, i * 150);
+            });
+
+            confetti({
+                particleCount: 35,
+                spread: 60,
+                origin: { y: 0.7 }
             });
         }
 
@@ -824,28 +856,11 @@
             element.classList.toggle('active');
         }
 
-        // QR Code Generator
-        function generateQr() {
-            const container = document.getElementById('qrcode');
-            container.innerHTML = '';
-            const link = document.getElementById('qr-link').value;
-            new QRCode(container, {
-                text: link,
-                width: 140,
-                height: 140,
-                colorDark: "#0F2537",
-                colorLight: "#FFFFFF",
-                correctLevel: QRCode.CorrectLevel.H
-            });
-        }
-
-        // Initialize default QR Code on load
+        // Canvas Particles Background Animation
         window.onload = function() {
-            generateQr();
             initParticleBg();
         };
 
-        // Canvas Particles Background Animation
         function initParticleBg() {
             const canvas = document.getElementById('bg-canvas');
             const ctx = canvas.getContext('2d');
