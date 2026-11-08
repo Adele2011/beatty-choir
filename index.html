@@ -1,5 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beatty Secondary School Choir CCA | Open House</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-.preset-btn {
+    <style>
+        :root {
+            --navy-primary: #0F2537;
+            --navy-dark: #081420;
+            --gold-accent: #FFD700;
+            --gold-bright: #FFEA00;
+            --gold-light: #FFF8D6;
+            --white: #FFFFFF;
+            --text-dark: #1E293B;
+            --text-muted: #64748B;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --shadow-glow: 0 10px 30px rgba(255, 215, 0, 0.25);
+            --shadow-card: 0 12px 32px rgba(15, 37, 55, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--navy-dark);
+            color: var(--text-dark);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Particle Background Canvas */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Top Audio Controller Bar */
+        .audio-bar {
+            position: fixed;
+            top: 16px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(15, 37, 55, 0.85);
+            backdrop-filter: blur(12px);
+            border: 2px solid var(--gold-accent);
+            border-radius: 50px;
+            padding: 8px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: var(--shadow-glow);
+            color: var(--white);
+        }
+
+        .audio-bar button {
+            background: var(--gold-accent);
+            border: none;
+            color: var(--navy-primary);
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .audio-bar button:hover {
+            transform: scale(1.1);
+            background: var(--gold-bright);
+        }
+
+        .audio-bar .info {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--gold-accent);
+        }
+
+        /* Visualizer Waveform Animation */
+        .sound-wave {
+            display: flex;
+            align-items: flex-end;
+            gap: 3px;
+            height: 18px;
+        }
+
+        .sound-bar {
+            width: 3px;
+            background: var(--gold-accent);
+            border-radius: 2px;
+            animation: pulse 1s infinite alternate ease-in-out;
+        }
+
+        .sound-bar:nth-child(1) { height: 40%; animation-delay: 0.1s; }
+        .sound-bar:nth-child(2) { height: 80%; animation-delay: 0.3s; }
+        .sound-bar:nth-child(3) { height: 100%; animation-delay: 0.2s; }
+        .sound-bar:nth-child(4) { height: 60%; animation-delay: 0.4s; }
+
+        @keyframes pulse {
+            0% { transform: scaleY(0.3); }
+            100% { transform: scaleY(1); }
+        }
+
+        /* Main Container */
+        .wrapper {
+            position: relative;
+            z-index: 1;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Hero Header */
+        header {
+            text-align: center;
+            padding: 60px 20px 40px;
+            color: var(--white);
+        }
+
+        .badge-school {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 215, 0, 0.15);
+            border: 1px solid var(--gold-accent);
+            color: var(--gold-accent);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .hero-title {
+            font-family: 'Fredoka One', cursive;
+            font-size: clamp(2.8rem, 6vw, 4.5rem);
+            color: var(--gold-accent);
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            line-height: 1.1;
+            margin-bottom: 12px;
+        }
+
+        .hero-sub {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            font-weight: 800;
+            color: var(--white);
+            margin-bottom: 16px;
+        }
+
+        .school-motto {
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.05rem;
+        }
+
+        /* Card Section Styling */
+        .section-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-top: 30px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            box-shadow: var(--shadow-card);
+            border: 2px solid transparent;
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            border-color: var(--gold-accent);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .card-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            background: var(--navy-primary);
+            color: var(--gold-accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .card-title {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.5rem;
+            color: var(--navy-primary);
+        }
+
+        /* List Items */
+        .feature-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .feature-item i {
+            color: #10B981;
+            font-size: 1.2rem;
+            margin-top: 3px;
+        }
+
+        .feature-text h4 {
+            font-weight: 700;
+            color: var(--navy-primary);
+            font-size: 1.05rem;
+            margin-bottom: 4px;
+        }
+
+        .feature-text p {
+            color: var(--text-muted);
+            font-size: 0.92rem;
+            line-height: 1.4;
+        }
+
+        /* Events Grid */
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-top: 10px;
+        }
+
+        .event-box {
+            background: rgba(15, 37, 55, 0.04);
+            border-left: 4px solid var(--navy-primary);
+            padding: 16px;
+            border-radius: 12px;
+        }
+
+        .event-box h4 {
+            font-weight: 800;
+            color: var(--navy-primary);
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .event-box p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Interactive Soundboard */
+        .preset-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .preset-btn {
             background: var(--navy-primary);
             color: var(--gold-accent);
             border: 2px solid var(--gold-accent);
@@ -186,7 +479,6 @@
     </style>
 </head>
 <body>
-
     <!-- Dynamic Canvas Particle Background -->
     <canvas id="bg-canvas"></canvas>
 
@@ -214,13 +506,6 @@
             <p class="hero-sub">✨ Join Beatty Secondary & Sing Your Heart Out! ✨</p>
             <p class="school-motto">"Non Vi Sed Arte — Not by Force, But by Skill"</p>
         </header>
-
-
-        <!-- Choir CCA Motto -->
-        <section class="cca-motto-banner" aria-label="Choir CCA motto">
-            <p class="cca-motto-label">Our CCA Motto</p>
-            <h2 class="cca-motto-text">“Voices in Harmony, Striving for Perfection”</h2>
-        </section>
 
         <!-- Main Content Grid -->
         <div class="section-grid">
@@ -336,642 +621,275 @@
                     <p id="quiz-result-desc" style="margin-top: 6px; font-size: 0.95rem;"></p>
                 </div>
             </div>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beatty Secondary School Choir CCA | Open House</title>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <!-- FontAwesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Canvas Confetti -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-    <style>
-        :root {
-            --navy-primary: #0F2537;
-            --navy-dark: #081420;
-            --gold-accent: #FFD700;
-            --gold-bright: #FFEA00;
-            --gold-light: #FFF8D6;
-            --white: #FFFFFF;
-            --text-dark: #1E293B;
-            --text-muted: #64748B;
-            --card-bg: rgba(255, 255, 255, 0.95);
-            --radius-lg: 24px;
-            --radius-md: 16px;
-            --shadow-glow: 0 10px 30px rgba(255, 215, 0, 0.25);
-            --shadow-card: 0 12px 32px rgba(15, 37, 55, 0.08);
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--navy-dark);
-            color: var(--text-dark);
-            overflow-x: hidden;
-            position: relative;
-        }
-
-        /* Particle Background Canvas */
-        #bg-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        /* Top Audio Controller Bar */
-        .audio-bar {
-            position: fixed;
-            top: 16px;
-            right: 20px;
-            z-index: 1000;
-            background: rgba(15, 37, 55, 0.85);
-            backdrop-filter: blur(12px);
-            border: 2px solid var(--gold-accent);
-            border-radius: 50px;
-            padding: 8px 18px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            box-shadow: var(--shadow-glow);
-            color: var(--white);
-        }
-
-        .audio-bar button {
-            background: var(--gold-accent);
-            border: none;
-            color: var(--navy-primary);
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-        }
-
-        .audio-bar button:hover {
-            transform: scale(1.1);
-            background: var(--gold-bright);
-        }
-
-        .audio-bar .info {
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: var(--gold-accent);
-        }
-
-        /* Visualizer Waveform Animation */
-        .sound-wave {
-            display: flex;
-            align-items: flex-end;
-            gap: 3px;
-            height: 18px;
-        }
-
-        .sound-bar {
-            width: 3px;
-            background: var(--gold-accent);
-            border-radius: 2px;
-            animation: pulse 1s infinite alternate ease-in-out;
-        }
-
-        .sound-bar:nth-child(1) { height: 40%; animation-delay: 0.1s; }
-        .sound-bar:nth-child(2) { height: 80%; animation-delay: 0.3s; }
-        .sound-bar:nth-child(3) { height: 100%; animation-delay: 0.2s; }
-        .sound-bar:nth-child(4) { height: 60%; animation-delay: 0.4s; }
-
-        @keyframes pulse {
-            0% { transform: scaleY(0.3); }
-            100% { transform: scaleY(1); }
-        }
-
-        /* Main Container */
-        .wrapper {
-            position: relative;
-            z-index: 1;
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        /* Hero Header */
-        header {
-            text-align: center;
-            padding: 60px 20px 40px;
-            color: var(--white);
-        }
-
-        .badge-school {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(255, 215, 0, 0.15);
-            border: 1px solid var(--gold-accent);
-            color: var(--gold-accent);
-            padding: 8px 20px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 0.95rem;
-            margin-bottom: 20px;
-            letter-spacing: 0.5px;
-        }
-
-        .hero-title {
-            font-family: 'Fredoka One', cursive;
-            font-size: clamp(2.8rem, 6vw, 4.5rem);
-            color: var(--gold-accent);
-            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-            line-height: 1.1;
-            margin-bottom: 12px;
-        }
-
-        .hero-sub {
-            font-size: clamp(1.2rem, 3vw, 1.8rem);
-            font-weight: 800;
-            color: var(--white);
-            margin-bottom: 16px;
-        }
-
-        .school-motto {
-            font-style: italic;
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 1.05rem;
-        }
-
-        /* Choir CCA Motto */
-        .cca-motto-banner {
-            max-width: 850px;
-            margin: 0 auto 30px;
-            padding: 24px 28px;
-            text-align: center;
-            background: linear-gradient(135deg, rgba(255, 215, 0, 0.16), rgba(255, 248, 214, 0.08));
-            border: 2px solid var(--gold-accent);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-glow);
-        }
-
-        .cca-motto-label {
-            color: var(--gold-accent);
-            font-size: 0.82rem;
-            font-weight: 800;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-        }
-
-        .cca-motto-text {
-            color: var(--white);
-            font-family: 'Fredoka One', cursive;
-            font-size: clamp(1.35rem, 3vw, 2rem);
-            line-height: 1.3;
-        }
-
-        /* Card Section Styling */
-        .section-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 24px;
-            margin-top: 30px;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border-radius: var(--radius-lg);
-            padding: 32px;
-            box-shadow: var(--shadow-card);
-            border: 2px solid transparent;
-            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-6px);
-            border-color: var(--gold-accent);
-            box-shadow: var(--shadow-glow);
-        }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            margin-bottom: 20px;
-        }
-
-        .card-icon {
-            width: 52px;
-            height: 52px;
-            border-radius: 16px;
-            background: var(--navy-primary);
-            color: var(--gold-accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            flex-shrink: 0;
-        }
-
-        .card-title {
-            font-family: 'Fredoka One', cursive;
-            font-size: 1.5rem;
-            color: var(--navy-primary);
-        }
-
-        /* List Items */
-        .feature-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .feature-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-        }
-
-        .feature-item i {
-            color: #10B981;
-            font-size: 1.2rem;
-            margin-top: 3px;
-        }
-
-        .feature-text h4 {
-            font-weight: 700;
-            color: var(--navy-primary);
-            font-size: 1.05rem;
-            margin-bottom: 4px;
-        }
-
-        .feature-text p {
-            color: var(--text-muted);
-            font-size: 0.92rem;
-            line-height: 1.4;
-        }
-
-        /* Events Grid */
-        .events-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 16px;
-            margin-top: 10px;
-        }
-
-        .event-box {
-            background: rgba(15, 37, 55, 0.04);
-            border-left: 4px solid var(--navy-primary);
-            padding: 16px;
-            border-radius: 12px;
-        }
-
-        .event-box h4 {
-            font-weight: 800;
-            color: var(--navy-primary);
-            font-size: 1rem;
-            margin-bottom: 4px;
-        }
-
-        .event-box p {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        /* Interactive Soundboard */
-        .preset-buttons {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-        }
-                    <strong>🎧 Beats & Vibes</strong><br>
-                    <small>I love rhythm, beatboxing, and musical timing!</small>
-                </button>
+            <!-- Card 5: P6 Student FAQ -->
+            <div class="card" style="grid-column: 1 / -1;">
+                <div class="card-header">
+                    <div class="card-icon"><i class="fa-solid fa-circle-question"></i></div>
+                    <h2 class="card-title">P6 Student FAQ: All Your Questions Answered!</h2>
+                </div>
+                <div class="faq-list">
+                    <div class="faq-item" onclick="toggleFaq(this)">
+                        <div class="faq-question">
+                            <span>Will I ever be forced to sing solo alone on stage?</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            No way! Choir is all about team harmony. You will always sing together with your section friends. Solo parts are purely voluntary for students who want to try out!
+                        </div>
+                    </div>
+                    <div class="faq-item" onclick="toggleFaq(this)">
+                        <div class="faq-question">
+                            <span>Can boys join Choir?</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            Absolutely! Boys bring essential tenor and bass warmth to our choir harmony. We love having boys join our choir family!
+                        </div>
+                    </div>
+                    <div class="faq-item" onclick="toggleFaq(this)">
+                        <div class="faq-question">
+                            <span>Will CCA interfere with my Sec 1 studies and exams?</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            Our practices are structured twice a week with regular breaks. CCA sessions pause during major examination periods so you can study stress-free.
+                        </div>
+                    </div>
+                    <div class="faq-item" onclick="toggleFaq(this)">
+                        <div class="faq-question">
+                            <span>Do I need prior singing experience or music reading skills?</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            Not at all! We teach everything from basic vocal warm-ups and breathing to reading musical notation step-by-step.
+                        </div>
+                    </div>
+                    <div class="faq-item" onclick="toggleFaq(this)">
+                        <div class="faq-question">
+                            <span>How do I select Choir during Sec 1 CCA Selection Week?</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            During your Sec 1 orientation week in January, simply select <strong>Choir</strong> as your 1st Choice CCA option on the school portal!
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="quiz-result" id="quiz-result">
-                <h3 id="quiz-result-title" style="color: var(--gold-accent); font-family: 'Fredoka One'; font-size: 1.4rem;"></h3>
-                <p id="quiz-result-desc" style="margin-top: 6px; font-size: 0.95rem;"></p>
+
+        </div>
+
+        <!-- CCA Practice Timings Banner -->
+        <div class="timings-banner">
+            <h3>⏰ CCA Practice Schedule & Timings</h3>
+            <p style="font-weight: 600;">Regular sessions held at the Beatty Secondary AVA Room</p>
+            <div class="timings-chips">
+                <div class="chip">🗓️ Tuesdays: 2.45 PM – 4.45 PM</div>
+                <div class="chip">🗓️ Fridays: 1.15 PM – 3.15 PM</div>
             </div>
         </div>
 
-        <!-- Card 5: P6 Student FAQ -->
-        <div class="card" style="grid-column: 1 / -1;">
-            <div class="card-header">
-                <div class="card-icon"><i class="fa-solid fa-circle-question"></i></div>
-                <h2 class="card-title">P6 Student FAQ: All Your Questions Answered!</h2>
-            </div>
-            <div class="faq-list">
-                <div class="faq-item" onclick="toggleFaq(this)">
-                    <div class="faq-question">
-                        <span>Will I ever be forced to sing solo alone on stage?</span>
-                        <i class="fa-solid fa-chevron-down"></i>
-                    </div>
-                    <div class="faq-answer">
-                        No way! Choir is all about team harmony. You will always sing together with your section friends. Solo parts are purely voluntary for students who want to try out!
-                    </div>
-                </div>
-                <div class="faq-item" onclick="toggleFaq(this)">
-                    <div class="faq-question">
-                        <span>Can boys join Choir?</span>
-                        <i class="fa-solid fa-chevron-down"></i>
-                    </div>
-                    <div class="faq-answer">
-                        Absolutely! Boys bring essential tenor and bass warmth to our choir harmony. We love having boys join our choir family!
-                    </div>
-                </div>
-                <div class="faq-item" onclick="toggleFaq(this)">
-                    <div class="faq-question">
-                        <span>Will CCA interfere with my Sec 1 studies and exams?</span>
-                        <i class="fa-solid fa-chevron-down"></i>
-                    </div>
-                    <div class="faq-answer">
-                        Our practices are structured twice a week with regular breaks. CCA sessions pause during major examination periods so you can study stress-free.
-                    </div>
-                </div>
-                <div class="faq-item" onclick="toggleFaq(this)">
-                    <div class="faq-question">
-                        <span>Do I need prior singing experience or music reading skills?</span>
-                        <i class="fa-solid fa-chevron-down"></i>
-                    </div>
-                    <div class="faq-answer">
-                        Not at all! We teach everything from basic vocal warm-ups and breathing to reading musical notation step-by-step.
-                    </div>
-                </div>
-                <div class="faq-item" onclick="toggleFaq(this)">
-                    <div class="faq-question">
-                        <span>How do I select Choir during Sec 1 CCA Selection Week?</span>
-                        <i class="fa-solid fa-chevron-down"></i>
-                    </div>
-                    <div class="faq-answer">
-                        During your Sec 1 orientation week in January, simply select <strong>Choir</strong> as your 1st Choice CCA option on the school portal!
-                    </div>
-                </div>
-            </div>
-        </div>
-
+        <footer>
+            <p>© Beatty Secondary School Choir CCA • Open House Campaign</p>
+            <p style="margin-top: 4px; font-size: 0.8rem;">Non Vi Sed Arte</p>
+        </footer>
     </div>
+    <!-- Web Audio & Interactivity Script -->
+    <script>
+        // Web Audio API Background Music Synthesizer
+        let audioCtx = null;
+        let isPlaying = false;
+        let bgInterval = null;
 
-    <!-- CCA Practice Timings Banner -->
-    <div class="timings-banner">
-        <h3>⏰ CCA Practice Schedule & Timings</h3>
-        <p style="font-weight: 600;">Regular sessions held at the Beatty Secondary AVA Room</p>
-        <div class="timings-chips">
-            <div class="chip">🗓️ Tuesdays: 2.45 PM – 4.45 PM</div>
-            <div class="chip">🗓️ Fridays: 1.15 PM – 3.15 PM</div>
-        </div>
-    </div>
-
-    <footer>
-        <p>© Beatty Secondary School Choir CCA • Open House Campaign</p>
-        <p style="margin-top: 4px; font-size: 0.8rem;">Non Vi Sed Arte</p>
-    </footer>
-</div>
-
-<!-- Web Audio & Interactivity Script -->
-<script>
-    // Web Audio API Background Music Synthesizer
-    let audioCtx = null;
-    let isPlaying = false;
-    let bgInterval = null;
-
-    function initAudio() {
-        if (!audioCtx) {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        }
-    }
-
-    function toggleBgMusic() {
-        initAudio();
-        if (audioCtx.state === 'suspended') {
-            audioCtx.resume();
-        }
-
-        const btn = document.getElementById('bg-audio-toggle');
-        const status = document.getElementById('audio-status');
-        const wave = document.getElementById('wave-bars');
-
-        if (!isPlaying) {
-            isPlaying = true;
-            btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-            status.innerText = "Background Music: Playing 🎶";
-            wave.style.opacity = "1";
-            startAmbientChords();
-        } else {
-            isPlaying = false;
-            btn.innerHTML = '<i class="fa-solid fa-music"></i>';
-            status.innerText = "Background Music: Off";
-            wave.style.opacity = "0.4";
-            if (bgInterval) clearInterval(bgInterval);
-        }
-    }
-
-    const chordProgression = [
-        [261.63, 329.63, 392.00, 493.88], // Cmaj7
-        [220.00, 261.63, 329.63, 392.00], // Am7
-        [174.61, 220.00, 261.63, 329.63], // Fmaj7
-        [196.00, 246.94, 293.66, 349.23]  // G7
-    ];
-
-    let chordIdx = 0;
-
-    function startAmbientChords() {
-        playChord(chordProgression[chordIdx]);
-        chordIdx = (chordIdx + 1) % chordProgression.length;
-
-        bgInterval = setInterval(() => {
-            if (isPlaying) {
-                playChord(chordProgression[chordIdx]);
-                chordIdx = (chordIdx + 1) % chordProgression.length;
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             }
-        }, 3500);
-    }
-
-    function playChord(freqs) {
-        if (!audioCtx || !isPlaying) return;
-
-        freqs.forEach(freq => {
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-
-            osc.type = 'sine';
-            osc.frequency.value = freq;
-
-            gain.gain.setValueAtTime(0.015, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(
-                0.0001,
-                audioCtx.currentTime + 3.2
-            );
-
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-
-            osc.start();
-            osc.stop(audioCtx.currentTime + 3.3);
-        });
-    }
-
-    // Single Note Player
-    function playSynthNote(freq, noteName) {
-        initAudio();
-
-        if (audioCtx.state === 'suspended') {
-            audioCtx.resume();
         }
 
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
+        function toggleBgMusic() {
+            initAudio();
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
 
-        osc.type = 'triangle';
-        osc.frequency.value = freq;
+            const btn = document.getElementById('bg-audio-toggle');
+            const status = document.getElementById('audio-status');
+            const wave = document.getElementById('wave-bars');
 
-        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(
-            0.001,
-            audioCtx.currentTime + 0.85
-        );
-
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.9);
-
-        confetti({
-            particleCount: 15,
-            spread: 40,
-            origin: { y: 0.8 }
-        });
-    }
-
-    // Harmony Presets Player
-    function playHarmonyPreset(preset) {
-        initAudio();
-
-        if (audioCtx.state === 'suspended') {
-            audioCtx.resume();
+            if (!isPlaying) {
+                isPlaying = true;
+                btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+                status.innerText = "Background Music: Playing 🎶";
+                wave.style.opacity = "1";
+                startAmbientChords();
+            } else {
+                isPlaying = false;
+                btn.innerHTML = '<i class="fa-solid fa-music"></i>';
+                status.innerText = "Background Music: Off";
+                wave.style.opacity = "0.4";
+                if (bgInterval) clearInterval(bgInterval);
+            }
         }
 
-        let freqs = [];
+        const chordProgression = [
+            [261.63, 329.63, 392.00, 493.88], // Cmaj7
+            [220.00, 261.63, 329.63, 392.00], // Am7
+            [174.61, 220.00, 261.63, 329.63], // Fmaj7
+            [196.00, 246.94, 293.66, 349.23]  // G7
+        ];
 
-        if (preset === 'soprano') {
-            freqs = [392.00, 440.00, 523.25];
-        } else if (preset === 'alto') {
-            freqs = [261.63, 329.63, 392.00];
-        } else if (preset === 'full') {
-            freqs = [130.81, 261.63, 329.63, 392.00, 523.25];
+        let chordIdx = 0;
+        function startAmbientChords() {
+            playChord(chordProgression[chordIdx]);
+            chordIdx = (chordIdx + 1) % chordProgression.length;
+
+            bgInterval = setInterval(() => {
+                if (isPlaying) {
+                    playChord(chordProgression[chordIdx]);
+                    chordIdx = (chordIdx + 1) % chordProgression.length;
+                }
+            }, 3500);
         }
 
-        freqs.forEach((f, i) => {
-            setTimeout(() => {
+        function playChord(freqs) {
+            if (!audioCtx || !isPlaying) return;
+            freqs.forEach(freq => {
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
-
                 osc.type = 'sine';
-                osc.frequency.value = f;
-
-                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(
-                    0.001,
-                    audioCtx.currentTime + 1.2
-                );
-
+                osc.frequency.value = freq;
+                gain.gain.setValueAtTime(0.015, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 3.2);
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
-
                 osc.start();
-                osc.stop(audioCtx.currentTime + 1.25);
-            }, i * 150);
-        });
-
-        confetti({
-            particleCount: 35,
-            spread: 60,
-            origin: { y: 0.7 }
-        });
-    }
-
-    // Quiz Functionality
-    function selectQuiz(type, title, desc) {
-        const resBox = document.getElementById('quiz-result');
-
-        document.getElementById('quiz-result-title').innerText = title;
-        document.getElementById('quiz-result-desc').innerText = desc;
-
-        resBox.style.display = 'block';
-
-        confetti({
-            particleCount: 50,
-            spread: 70,
-            origin: { y: 0.6 }
-        });
-    }
-
-    // FAQ Toggle
-    function toggleFaq(element) {
-        element.classList.toggle('active');
-    }
-
-    // Canvas Particles Background Animation
-    window.onload = function() {
-        initParticleBg();
-    };
-
-    function initParticleBg() {
-        const canvas = document.getElementById('bg-canvas');
-        const ctx = canvas.getContext('2d');
-
-        let width = canvas.width = window.innerWidth;
-        let height = canvas.height = window.innerHeight;
-
-        window.addEventListener('resize', () => {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-        });
-
-        const particles = Array.from({ length: 40 }, () => ({
-            x: Math.random() * width,
-            y: Math.random() * height,
-            radius: Math.random() * 2 + 1,
-            speedY: Math.random() * 0.5 + 0.2,
-            opacity: Math.random() * 0.5 + 0.2
-        }));
-
-        function animate() {
-            ctx.clearRect(0, 0, width, height);
-            ctx.fillStyle = "#FFD700";
-
-            particles.forEach(p => {
-                ctx.globalAlpha = p.opacity;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                ctx.fill();
-
-                p.y -= p.speedY;
-
-                if (p.y < 0) {
-                    p.y = height;
-                    p.x = Math.random() * width;
-                }
+                osc.stop(audioCtx.currentTime + 3.3);
             });
-
-            requestAnimationFrame(animate);
         }
 
-        animate();
-    }
-</script>
+        // Single Note Player
+        function playSynthNote(freq, noteName) {
+            initAudio();
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.value = freq;
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.85);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.9);
+
+            confetti({
+                particleCount: 15,
+                spread: 40,
+                origin: { y: 0.8 }
+            });
+        }
+
+        // Harmony Presets Player
+        function playHarmonyPreset(preset) {
+            initAudio();
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            let freqs = [];
+            if (preset === 'soprano') freqs = [392.00, 440.00, 523.25];
+            else if (preset === 'alto') freqs = [261.63, 329.63, 392.00];
+            else if (preset === 'full') freqs = [130.81, 261.63, 329.63, 392.00, 523.25];
+
+            freqs.forEach((f, i) => {
+                setTimeout(() => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.value = f;
+                    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.2);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 1.25);
+                }, i * 150);
+            });
+
+            confetti({
+                particleCount: 35,
+                spread: 60,
+                origin: { y: 0.7 }
+            });
+        }
+
+        // Quiz Functionality
+        function selectQuiz(type, title, desc) {
+            const resBox = document.getElementById('quiz-result');
+            document.getElementById('quiz-result-title').innerText = title;
+            document.getElementById('quiz-result-desc').innerText = desc;
+            resBox.style.display = 'block';
+
+            confetti({
+                particleCount: 50,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        }
+
+        // FAQ Toggle
+        function toggleFaq(element) {
+            element.classList.toggle('active');
+        }
+
+        // Canvas Particles Background Animation
+        window.onload = function() {
+            initParticleBg();
+        };
+
+        function initParticleBg() {
+            const canvas = document.getElementById('bg-canvas');
+            const ctx = canvas.getContext('2d');
+            let width = canvas.width = window.innerWidth;
+            let height = canvas.height = window.innerHeight;
+
+            window.addEventListener('resize', () => {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            });
+
+            const particles = Array.from({ length: 40 }, () => ({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                radius: Math.random() * 2 + 1,
+                speedY: Math.random() * 0.5 + 0.2,
+                opacity: Math.random() * 0.5 + 0.2
+            }));
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+                ctx.fillStyle = "#FFD700";
+
+                particles.forEach(p => {
+                    ctx.globalAlpha = p.opacity;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    p.y -= p.speedY;
+                    if (p.y < 0) {
+                        p.y = height;
+                        p.x = Math.random() * width;
+                    }
+                });
+
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+    </script>
 </body>
 </html>
